@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开元</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=6188ae61064a32cf491e483dea6133f7"></script>
+</head>
+<body>
+    <div class="container">
+        <img src="https://bkimg.cdn.bcebos.com/pic/ae51f3deb48f8c54be6dafbb30292df5e1fe7fe3" alt="开元logo" class="logo">
+        <form id="searchForm">
+            <input type="text" id="searchInput" class="search-box" placeholder="请输入搜索内容">
+            <button type="submit" class="search-btn">开元一下</button>
+        </form>
+        <div id="map-container" style="width:100%;height:400px;margin-top:20px;"></div>
+        <script>
+            // 初始化地图
+            const map = new AMap.Map('map-container', {
+                zoom: 11,
+                center: [116.397428, 39.90923]
+            });
+
+            document.getElementById('searchForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const query = document.getElementById('searchInput').value;
+                
+                try {
+                    const response = await fetch('http://localhost:3000/search', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ query })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        // 处理搜索结果
+                        console.log('Search results:', data.data);
+                        alert('搜索成功，结果已打印到控制台');
+                    } else {
+                        alert('搜索失败：' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('搜索请求失败');
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>
